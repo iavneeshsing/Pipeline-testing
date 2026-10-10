@@ -2,7 +2,7 @@ pool: vistara-agent
 
 trigger:
 - main
-- feature/*
+
 
 stages:
 - stage: Terraform_Init
@@ -75,7 +75,10 @@ stages:
   displayName: "Terraform Apply"
 
   dependsOn: Terraform_Plan
-  condition: succeeded()
+  condition: and(
+    succeeded(),
+    eq(variables['Build.SourceBranch'], 'refs/heads/main')
+    )
 
   jobs:
   - job: Apply
