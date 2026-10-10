@@ -1,0 +1,110 @@
+pool: vistara-agent
+
+trigger:
+- main
+- feature/*
+
+stages:
+- stage: Terraform_Init
+  displayName: "Terraform Init"
+
+  jobs:
+  - job: Init
+    displayName: "Terraform Init"
+
+    steps:
+
+    - task: TerraformInstaller@1
+      displayName: "Install Terraform"
+      inputs:
+        terraformVersion: 'latest'
+
+    - task: TerraformTask@5
+      displayName: "Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        backendServiceArm: 'Pipelinetest'
+        backendAzureRmResourceGroupName: 'rg-virat'
+        backendAzureRmStorageAccountName: 'storagevirat'
+        backendAzureRmContainerName: 'container1'
+        backendAzureRmKey: 'terraform.tfstate'
+
+
+- stage: Terraform_Plan
+  displayName: "Terraform Plan"
+
+  dependsOn: Terraform_Init
+  condition: succeeded()
+
+  jobs:
+  - job: Plan
+    displayName: "Terraform Plan"
+
+    steps:
+
+    - task: TerraformInstaller@1
+      displayName: "Install Terraform"
+      inputs:
+        terraformVersion: 'latest'
+
+    - task: TerraformTask@5
+      displayName: "Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        backendServiceArm: 'Pipelinetest'
+        backendAzureRmResourceGroupName: 'rg-virat'
+        backendAzureRmStorageAccountName: 'storagevirat'
+        backendAzureRmContainerName: 'container1'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTask@5
+      displayName: "Terraform Plan"
+      inputs:
+        provider: 'azurerm'
+        command: 'plan'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        environmentServiceNameAzureRM: 'Pipelinetest'
+
+
+
+- stage: Terraform_Apply
+  displayName: "Terraform Apply"
+
+  dependsOn: Terraform_Plan
+  condition: succeeded()
+
+  jobs:
+  - job: Apply
+    displayName: "Terraform Apply"
+
+    steps:
+
+    - task: TerraformInstaller@1
+      displayName: "Install Terraform"
+      inputs:
+        terraformVersion: 'latest'
+
+    - task: TerraformTask@5
+      displayName: "Terraform Init"
+      inputs:
+        provider: 'azurerm'
+        command: 'init'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        backendServiceArm: 'Pipelinetest'
+        backendAzureRmResourceGroupName: 'rg-virat'
+        backendAzureRmStorageAccountName: 'storagevirat'
+        backendAzureRmContainerName: 'container1'
+        backendAzureRmKey: 'terraform.tfstate'
+
+    - task: TerraformTask@5
+      displayName: "Terraform Apply"
+      inputs:
+        provider: 'azurerm'
+        command: 'apply'
+        workingDirectory: '$(System.DefaultWorkingDirectory)'
+        environmentServiceNameAzureRM: 'Pipelinetest'
+        commandOptions: '-auto-approve'
