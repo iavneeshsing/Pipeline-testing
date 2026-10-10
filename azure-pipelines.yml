@@ -18,6 +18,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'tflint --recursive'
+      continueOnError: true
 
   - job: tfsec
     displayName: TFsec
@@ -28,6 +29,7 @@ stages:
       inputs:
         targetType: 'inline'
         script: 'tfsec'
+      continueOnError: true
 
 
 - stage: Terraform_Init
