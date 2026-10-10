@@ -1,13 +1,13 @@
 rgs = {
   rg_dev = {
 
-    name     = "Dev"
+    name     = "forntend"
     location = "eastus"
   }
 
   rg_prod = {
 
-    name     = "Prod"
+    name     = "backend"
     location = "eastus"
   }
 
