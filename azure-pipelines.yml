@@ -1,7 +1,9 @@
 pool: vistara-agent
 
 trigger:
-- main
+  branches:
+    include:
+    - '*'
 
 
 stages:
